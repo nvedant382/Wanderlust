@@ -1,0 +1,75 @@
+<%- layout("layouts/boilerplate") %>
+
+<style>
+    #info{
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .tax-toggler{
+            border:1px solid black;
+            height:3.25rem;
+            padding:1rem;
+            border-radius:1rem;
+            margin-left:5rem;
+            display:flex;
+            align-items: center;
+            font-size: 17px;
+    }
+
+</style>
+
+<div class="mb-4 mt-4" style="font-size: 25px;" id="info">
+    <p>Results for Category: <b><%= req_category %></b> </p>
+
+    <div class="tax-toggler">
+        <div class="form-check-reverse form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Display after total Taxes</label>
+        </div>
+    </div>
+</div>
+
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-5 mb-5">
+
+    <% for(listing of listings){ %>
+
+        <a href="/listing/<%= listing._id %>" class="listing-link">
+            <div class="card col listing-card mb-3">
+                <img src="<%= listing.image.url %>" class="card-img-top" alt="listing-image" style="height:20rem; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title mt-1"><%= listing.title %></h5>
+                    <div class="card-body">
+                        <p>
+                           <span class="price-toggler" data-price="<%= listing.price %>"><%= listing.price.toLocaleString("en-IN") %>&nbsp;&nbsp;&nbsp;/night</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+    <% } %>
+</div>
+
+<script>
+    let taxSwitch = document.getElementById("flexSwitchCheckDefault")
+
+    taxSwitch.addEventListener('click',()=>{
+        let priceElements = document.getElementsByClassName("price-toggler")
+        
+        for(elem of priceElements){
+            let originalPrice = parseFloat(elem.getAttribute("data-price"))
+            let currentPrice = parseFloat(elem.innerText.replace(",",""))
+
+            if(originalPrice == currentPrice){
+                let tax = (originalPrice * 18) / 100;
+                elem.innerText = (tax + originalPrice).toLocaleString("en-IN") + "\t\t\t/night"
+            }
+            else{
+                elem.innerText = originalPrice.toLocaleString("en-IN") + "\t\t\t/night"
+            }
+        }
+    })
+
+</script>
